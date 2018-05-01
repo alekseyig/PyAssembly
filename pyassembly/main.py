@@ -9,7 +9,7 @@ from pip.commands import InstallCommand
 from pkg_resources import get_build_platform, Distribution
 
 
-class PyAssembly(Command):
+class pyassembly(Command):
     description = "create an egg or zip distribution with all its transitive dependencies"
     user_options = [
         ('requirements-file=', 'r',
@@ -57,6 +57,12 @@ class PyAssembly(Command):
             install_command = InstallCommand(isolated=False)
             install_command.main(args=['-r', self.requirements_file, '-t', dist_dir])
 
+        bdist_egg = self.distribution.get_command_obj('bdist_egg')  # type: Command
+        bdist_egg.bdist_dir = dist_dir
+        bdist_egg.dist_dir = self.assembly_dir
+        bdist_egg.keep_temp = 1  # wtf?, it is True or False and not 1 or 0
+        bdist_egg.ensure_finalized()
+
         if self.destination_format == 'zip':
             cmd = self.reinitialize_command('build')
             cmd.build_purelib = dist_dir
@@ -68,11 +74,6 @@ class PyAssembly(Command):
             shutil.make_archive(base_name=os.path.join(self.assembly_dir, basename), format='zip', root_dir=dist_dir)
 
         else:
-            bdist_egg = self.distribution.get_command_obj('bdist_egg')  # type: Command
-            bdist_egg.bdist_dir = dist_dir
-            bdist_egg.dist_dir = self.assembly_dir
-            bdist_egg.keep_temp = 1  # wtf?, it is True or False and not 1 or 0
-            bdist_egg.ensure_finalized()
             bdist_egg.run()
             shutil.rmtree(self.egg_info)
 

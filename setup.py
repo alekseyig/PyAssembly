@@ -1,7 +1,7 @@
 from pip.req import parse_requirements
 from setuptools import setup, find_packages
 
-VERSION = "1.0"
+VERSION = "1.1"
 PACKAGE_NAME = "pyassembly"
 
 reqs = parse_requirements('requirements.txt', session=False)
@@ -31,6 +31,6 @@ setup(
     },
 
     entry_points={
-        'distutils.commands': ['pyassembly = pyassembly.main:PyAssembly']
+        'distutils.commands': ['pyassembly = pyassembly.main:pyassembly']
     }
 )
