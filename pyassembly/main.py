@@ -5,7 +5,11 @@ import shutil
 from distutils.cmd import Command
 from distutils.sysconfig import get_python_version
 
-from pip._internal.commands import InstallCommand
+try:
+    from pip._internal.commands import InstallCommand
+except ImportError:  # for pip <= 9.0.3
+    from pip.commands import InstallCommand
+
 from pkg_resources import get_build_platform, Distribution
 
 
