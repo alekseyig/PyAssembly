@@ -1,2 +1,2 @@
-pip==9.0.3
+pip
 setuptools
