@@ -19,7 +19,7 @@ Example for using the tool
 
 .. code-block:: shell
 
-	$ pip setup.py pyassembly
+	$ python setup.py pyassembly
 
 
 How to get more options
