@@ -1,6 +1,7 @@
 import os
 import sys
 import shutil
+import tempfile
 
 from distutils.cmd import Command
 from distutils.sysconfig import get_python_version
@@ -58,8 +59,14 @@ class pyassembly(Command):
 
         # install deps, if needed
         if os.path.exists(self.requirements_file):
-            install_command = InstallCommand(isolated=False)
-            install_command.main(args=['-r', self.requirements_file, '-t', dist_dir])
+            with tempfile.NamedTemporaryFile() as tf, open(self.requirements_file) as f:
+                for ln in f:
+                    ln = ln.lstrip()
+                    if not (ln.startswith("#") or ln.startswith("pyassembly")):
+                        tf.write(ln)
+                tf.flush()
+                install_command = InstallCommand(isolated=False)
+                install_command.main(args=['-r', tf.name, '-t', dist_dir])
 
         bdist_egg = self.distribution.get_command_obj('bdist_egg')  # type: Command
         bdist_egg.bdist_dir = dist_dir
