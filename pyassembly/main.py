@@ -59,7 +59,7 @@ class pyassembly(Command):
 
         # install deps, if needed
         if os.path.exists(self.requirements_file):
-            with tempfile.NamedTemporaryFile() as tf, open(self.requirements_file) as f:
+            with tempfile.NamedTemporaryFile(mode='w+') as tf, open(self.requirements_file) as f:
                 for ln in f:
                     ln = ln.lstrip()
                     if not (ln.startswith("#") or ln.startswith("pyassembly")):
