@@ -7,7 +7,7 @@ from distutils.cmd import Command
 from distutils.sysconfig import get_python_version
 
 try:
-    from pip._internal.commands import InstallCommand
+    from pip._internal.commands.install import InstallCommand
 except ImportError:  # for pip <= 9.0.3
     from pip.commands import InstallCommand
 
@@ -65,7 +65,10 @@ class pyassembly(Command):
                     if not (ln.startswith("#") or ln.startswith("pyassembly")):
                         tf.write(ln)
                 tf.flush()
-                install_command = InstallCommand(isolated=False)
+                try:
+                    install_command = InstallCommand('install', 'Install packages.', isolated=False)
+                except TypeError:  # pip < 20
+                    install_command = InstallCommand(isolated=False)
                 install_command.main(args=['-r', tf.name, '-t', dist_dir])
 
         bdist_egg = self.distribution.get_command_obj('bdist_egg')  # type: Command
