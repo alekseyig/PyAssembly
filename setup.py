@@ -6,7 +6,7 @@ except ImportError:  # for pip <= 9.0.3
 from setuptools import setup, find_packages
 
 
-VERSION = "2.1"
+VERSION = "2.2.1-1science"
 PACKAGE_NAME = "pyassembly"
 
 reqs = parse_requirements('requirements.txt', session=False)
