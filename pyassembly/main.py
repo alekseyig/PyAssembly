@@ -1,12 +1,13 @@
 import os
 import sys
 import shutil
+import tempfile
 
 from distutils.cmd import Command
 from distutils.sysconfig import get_python_version
 
 try:
-    from pip._internal.commands import InstallCommand
+    from pip._internal.commands.install import InstallCommand
 except ImportError:  # for pip <= 9.0.3
     from pip.commands import InstallCommand
 
@@ -58,8 +59,17 @@ class pyassembly(Command):
 
         # install deps, if needed
         if os.path.exists(self.requirements_file):
-            install_command = InstallCommand(isolated=False)
-            install_command.main(args=['-r', self.requirements_file, '-t', dist_dir])
+            with tempfile.NamedTemporaryFile(mode='w+') as tf, open(self.requirements_file) as f:
+                for ln in f:
+                    ln = ln.lstrip()
+                    if not (ln.startswith("#") or ln.startswith("pyassembly")):
+                        tf.write(ln)
+                tf.flush()
+                try:
+                    install_command = InstallCommand('install', 'Install packages.', isolated=False)
+                except TypeError:  # pip < 20
+                    install_command = InstallCommand(isolated=False)
+                install_command.main(args=['-r', tf.name, '-t', dist_dir])
 
         bdist_egg = self.distribution.get_command_obj('bdist_egg')  # type: Command
         bdist_egg.bdist_dir = dist_dir
