@@ -6,8 +6,6 @@ pyassembly is the Python setup.py command. If you are familiar with fat or uber 
 Installing
 ----------
 
-.. code-block:: shell
-
 	$ pip install pyassembly
 	
 Alternatively, you can include it into your requirements.txt file.
@@ -17,16 +15,12 @@ How to use
 ----------
 Example for using the tool
 
-.. code-block:: shell
-
 	$ python setup.py pyassembly
 
 
 How to get more options
 -----------------------
 After you installed the command you can get the list of options
-
-.. code-block:: shell
 
 	$ python setup.py pyassembly --help
 
