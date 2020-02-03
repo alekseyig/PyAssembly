@@ -8,8 +8,11 @@ from distutils.sysconfig import get_python_version
 
 try:
     from pip._internal.commands.install import InstallCommand
-except ImportError:  # for pip <= 9.0.3
-    from pip.commands import InstallCommand
+except ImportError:  # for pip <= 19.2.3
+    try:
+        from pip._internal.commands import InstallCommand
+    except ImportError:  # for pip <= 9.0.3
+        from pip.commands import InstallCommand
 
 from pkg_resources import get_build_platform, Distribution
 
@@ -66,8 +69,8 @@ class pyassembly(Command):
                         tf.write(ln)
                 tf.flush()
                 try:
-                    install_command = InstallCommand('install', 'Install packages.', isolated=False)
-                except TypeError:  # pip < 20
+                    install_command = InstallCommand('PyAssemblyInternalInstall', 'Installs package dependencies.', isolated=False)
+                except TypeError:  # for pip < 20
                     install_command = InstallCommand(isolated=False)
                 install_command.main(args=['-r', tf.name, '-t', dist_dir])
 
